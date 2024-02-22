@@ -1,40 +1,10 @@
 <script lang="ts">
   import { Book, People, Time, Trophy, Search } from "$components/icons/index";
+  import Navbar from "$components/Navbar.svelte";
 </script>
 
 <div class="w-full h-full flex flex-col">
-  <header
-    class="w-full h-16 px-10 py-3 border-b border-gray-200 flex justify-between items-center"
-  >
-    <!-- ToggleMind Logo -->
-    <div class="flex items-center gap-4">
-      <div class="w-4 h-4">
-        <!-- Future logo placeholder -->
-      </div>
-      <h1 class="font-bold text-base md:text-lg tracking-tight">ToggleMind</h1>
-    </div>
-    <!-- Navigation and user actions -->
-    <nav class="flex justify-end items-center gap-1 md:gap-2 lg:gap-8">
-      <!-- Navigation links -->
-      <div class="flex items-center gap-2 lg:gap-9 font-medium text-sm md:text-base">
-        <a href="/learn">Learn</a>
-        <a href="/stories">Stories</a>
-        <a href="/vocab">Vocab</a>
-        <a href="/grammar">Grammar</a>
-        <a href="/practice">Practice</a>
-        <a href="/pricing">Pricing</a>
-      </div>
-      <!-- User actions -->
-      <div class="flex gap-1 md:gap-2 lg:gap-4 font-bold">
-        <button class="py-2 w-16 md:w-20 bg-sky-500 text-white rounded-xl text-sm md:text-base"
-          >Sign up</button
-        >
-        <button class="py-2 w-16 md:w-20 bg-slate-200 text-black rounded-xl text-sm md:text-base"
-          >Log in</button
-        >
-      </div>
-    </nav>
-  </header>
+  <Navbar />
   <main class="flex flex-col items-center px-40 py-5">
     <section class="w-full max-w-4xl flex flex-col items-start">
       <div
@@ -62,7 +32,8 @@
                 placeholder="Enter your email to start learning"
                 class="flex-1 pl-1 py-2 pr-2 bg-gray-50 text-neutral-900 rounded-xl text-xs md:text-base focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 border-none outline-none bg-transparent"
               />
-              <button class="bg-sky-500 text-white font-bold text-xs md:text-base py-2 md:py-3 px-4 rounded-xl"
+              <button
+                class="bg-sky-500 text-white font-bold text-xs md:text-base py-2 md:py-3 px-4 rounded-xl"
                 >Submit</button
               >
             </div>
@@ -89,7 +60,9 @@
             <Trophy />
           </div>
           <h4 class="font-bold text-sm md:text-base">Develop skills</h4>
-          <p class="text-xs md:text-sm text-gray-500">Useful lessons in every story</p>
+          <p class="text-xs md:text-sm text-gray-500">
+            Useful lessons in every story
+          </p>
         </div>
         <div
           class="p-3 md:p-4 rounded-lg border border-gray-300 flex flex-col gap-3 w-1/4"
@@ -109,7 +82,9 @@
             <People />
           </div>
           <h4 class="font-bold text-sm md:text-base">Community</h4>
-          <p class="text-xs md:text-sm text-slate-500">Connect with other learners</p>
+          <p class="text-xs md:text-sm text-slate-500">
+            Connect with other learners
+          </p>
         </div>
       </div>
       <div class="flex gap-3 mt-6">
@@ -120,7 +95,9 @@
             alt="Beginner Lesson"
           />
           <div>
-            <h5 class="text-sm md:text-base font-medium">Studying while cozy at home</h5>
+            <h5 class="text-sm md:text-base font-medium">
+              Studying while cozy at home
+            </h5>
             <p class="text-xs md:text-sm text-slate-500">Beginner</p>
           </div>
         </div>
@@ -131,7 +108,9 @@
             alt="Intermediate Lesson"
           />
           <div>
-            <h5 class="text-sm md:text-base font-medium">Reading in the park</h5>
+            <h5 class="text-sm md:text-base font-medium">
+              Reading in the park
+            </h5>
             <p class="text-xs md:text-sm text-slate-500">Intermediate</p>
           </div>
         </div>
