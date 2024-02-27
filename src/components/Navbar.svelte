@@ -13,25 +13,8 @@
   <!-- Navigation and user actions -->
   <nav class="flex justify-end items-center gap-2 sm:gap-4 lg:gap-8">
     <!-- Navigation links -->
-    <div
-      class="flex items-center gap-2 sm:gap-4 lg:gap-9 font-medium text-sm md:text-base"
-    >
-      <a href="/courses">Courses</a>
-      <a href="/stories">Stories</a>
-      <a href="/pricing">Pricing</a>
-    </div>
+    <slot name="nav-links" />
     <!-- User actions -->
-    <div class="flex gap-2 sm:gap-4 font-bold">
-      <a
-        href="/signup"
-        class="py-2 w-16 md:w-20 bg-sky-500 text-white rounded-xl text-sm text-center md:text-base"
-        >Sign up</a
-      >
-      <a
-        href="/login"
-        class="py-2 w-16 md:w-20 bg-slate-200 text-black rounded-xl text-sm text-center md:text-base"
-        >Log in</a
-      >
-    </div>
+    <slot name="user-actions" />
   </nav>
 </header>
