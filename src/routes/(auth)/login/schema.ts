@@ -9,7 +9,7 @@ export const formSchema = z.object({
 	password: z
 		.string()
 		.min(1, { message: "Password is required" })
-		.min(6, { message: "Password must be at least 6 characters" })
+		.min(6, { message: "Password must be at least 8 characters" })
 		.max(32, { message: "Password must be less than 32 characters" }),
 });
 
