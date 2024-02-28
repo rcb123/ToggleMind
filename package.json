@@ -30,7 +30,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"bits-ui": "^0.18.3",
+		"bits-ui": "^0.18.4",
 		"clsx": "^2.1.0",
 		"formsnap": "^0.5.1",
 		"lucide-svelte": "^0.341.0",
