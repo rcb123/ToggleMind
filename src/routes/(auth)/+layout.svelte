@@ -22,7 +22,4 @@
   >
     <slot />
   </main>
-  <footer
-    class="w-full h-16 border-t border-gray-200 flex justify-between items-center"
-  />
 </div>
