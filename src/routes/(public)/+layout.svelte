@@ -7,8 +7,7 @@
     slot="nav-links"
     class="flex items-center gap-2 sm:gap-4 lg:gap-9 font-medium text-sm md:text-base"
   >
-    <a href="/courses">Courses</a>
-    <a href="/stories">Stories</a>
+    <a href="/hub">Learn</a>
     <a href="/pricing">Pricing</a>
   </div>
 
