@@ -113,6 +113,7 @@
       for (const line of lines) {
         try {
           const part = JSON.parse(line);
+          console.log(part);
           if (part.choices[0].finish_reason === "stop") {
             isLLMActive.set(false);
             // if (LLMProvider === LLMProviders.GROQ) {
