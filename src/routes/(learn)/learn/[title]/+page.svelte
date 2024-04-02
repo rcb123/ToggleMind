@@ -108,12 +108,12 @@
 
       // Decoding each chunk
       const chunk = new TextDecoder().decode(value);
+      console.log(chunk)
       // Split by new lines and filter out empty lines
       const lines = chunk.split("\n").filter((line) => line.trim());
       for (const line of lines) {
         try {
           const part = JSON.parse(line);
-          console.log(part);
           if (part.choices[0].finish_reason === "stop") {
             isLLMActive.set(false);
             // if (LLMProvider === LLMProviders.GROQ) {
