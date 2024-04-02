@@ -11,7 +11,6 @@
     class="flex items-center gap-2 sm:gap-4 lg:gap-9 font-medium text-sm md:text-base"
   >
     <a href="/hub">Hub</a>
-    <a href="/saved">Saved</a>
   </div>
 
   <div slot="user-actions" class="flex gap-2 sm:gap-4 font-bold">
