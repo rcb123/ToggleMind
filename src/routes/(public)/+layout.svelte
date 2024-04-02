@@ -32,5 +32,9 @@
   </main>
   <footer
     class="w-full h-16 border-t border-gray-200 flex justify-between items-center"
-  />
+  >
+    <div class="flex flex-row items-center max-w-4xl w-full mx-auto">
+      <a href="/privacy" class="text-sm text-gray-700">Privacy Policy</a>
+    </div>
+  </footer>
 </div>
