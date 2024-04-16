@@ -1,5 +1,15 @@
 <script lang="ts">
   import { Book, People, Time, Trophy, Search } from "$components/icons/index";
+
+  let emailSent = false;
+
+  function handleSubmit() {
+    const emailInput = document.querySelector('input[type="email"]');
+    const email = emailInput.value;
+
+    // Set the `emailSent` variable to `true`
+    emailSent = true;
+  }
 </script>
 
 <section class="w-full max-w-4xl flex flex-col items-start">
@@ -16,6 +26,9 @@
         Every story is written to help you understand and remember new words.
         You'll also get questions that test your comprehension.
       </p>
+      {#if emailSent}
+        <p class="px-4 text-sm md:text-base text-green-500">Email sent successfully</p>
+      {/if}
       <div class="flex items-center p-4">
         <div
           class="flex flex-grow md:flex-grow-[0.2] items-center gap-2 rounded-xl border border-gray-200 bg-white pl-4 p-1"
@@ -30,8 +43,8 @@
           />
           <button
             class="bg-sky-500 text-white font-bold text-xs md:text-base py-2 md:py-3 px-4 rounded-xl"
-            >Submit</button
-          >
+            on:click={handleSubmit}
+          >Submit</button>
         </div>
       </div>
     </div>
