@@ -105,6 +105,7 @@
   };
 
   const generateStory = () => {
+    isLLMActive.set(true);
     append({
       role: "system",
       content: `Generate a story in ENGLISH ONLY based on the information provided.
@@ -114,6 +115,7 @@
   };
 
   const generateQuestion = () => {
+    isLLMActive.set(true);
     append({
       role: "system",
       content: `Generate a question in ${currLanguage} ONLY based on the story.
@@ -166,13 +168,14 @@
       <Button
         bind:this={difficultyButton}
         on:click={updateDifficulty}
+        disabled={$isLLMActive} 
         type="button">{currDifficulty}</Button
       >
       <Button on:click={updateLanguage} disabled={$isLLMActive} type="button"
         >{currLanguage}</Button
       >
-      <Button on:click={generateStory} type="button">Generate Story</Button>
-      <Button on:click={generateQuestion} type="button"
+      <Button on:click={generateStory} disabled={$isLLMActive} type="button">Generate Story</Button>
+      <Button on:click={generateQuestion} disabled={$isLLMActive}  type="button"
         >Generate Question</Button
       >
     </div>
