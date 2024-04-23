@@ -26,7 +26,7 @@
   let currDifficulty: string;
   currDifficulty = "Elementary";
 
-  const difficulties = ['Elementary', 'Average', 'Academic', 'Professional'];
+  const difficulties = ['Elementary', 'Conversational', 'Academic', 'Professional'];
   let currentDifficultyIndex = 1;
 
   const isLLMActive = writable(false);
