@@ -1,10 +1,12 @@
 <script lang="ts">
-  import { LLMProviders, type ChatMessage } from "$lib/types";
-  import type { ChatCompletion } from "groq-sdk/resources/chat/completions.mjs";
+  import type { ChatCompletionSystemMessageParam } from "ai/prompts";
   import type { PageData } from "../$types";
+  import type { Message } from "ai";
+
   import { writable } from "svelte/store";
   import { ArrowUp } from "lucide-svelte";
-  import Ellipsis from "$lib/svgs/Ellipsis.svelte";
+  import { useChat } from "ai/svelte";
+
   import Button from "$lib/components/ui/button/button.svelte";
 
   export let data: {
@@ -14,40 +16,43 @@
     image: string;
   } & PageData;
   console.log(data);
-  let abortController: AbortController | null = null;
 
-  const LLMProvider: LLMProviders = LLMProviders.OPENAI;
   const isLLMActive = writable(false);
-  const messages = writable<ChatMessage[]>([]);
-  let inputText = "";
-  const systemPrompt = {
+  const systemPrompt: Message = {
+    id: "",
     role: "system",
     content: `
-      You are a learning assistant that creates a story for the user and questions to assess their comprehension skills.
-      The user will respond to the questions and translate their answers into a foreign language.
-      Your questions should be structured to test the user's understanding of the story and their ability to translate it accurately.
-      Questions should be relavant to the story and cover a range of topics, including vocabulary, grammar, and comprehension.
-      Your task is to provide feedback on the user's responses and translations, guiding them to improve their language skills and understanding of the story.
+      <Guidelines>
+      You are a helpful foreign language teacher.
+      When prompted, generate stories in English based on the information provided.
+      When prompted, generate questions in French based on the story.
+      When the user responds, provide feedback in English.
       Remember to be encouraging and constructive in your feedback.
-      Story Title: ${data.title}
-      Story Theme: ${data.theme}
-      Story Brief: ${data.brief}
+      </Guidelines>
+      <Story Information>
+      Title: ${data.title}
+      Theme: ${data.theme}
+      Brief: ${data.brief}
+      </Story Information>
+      <Rules>
+      Stories MUST be in English
+      Questions MUST be in French
+      User Answers MUST be in French
+      Assistant Responses MUST be in English
+      </Rules>
       `,
   };
+  let tempMessage: ChatCompletionSystemMessageParam | null = null;
 
-  const handleSubmit = (event: Event) => {
-    event.preventDefault();
-    if ($isLLMActive) return;
-    if (inputText.trim() !== "") {
+  const { input, handleSubmit, messages, append } = useChat({
+    initialMessages: [systemPrompt],
+    onResponse: () => {
       isLLMActive.set(true);
-      $messages.push({
-        role: "user",
-        content: inputText,
-      });
-      inputText = "";
-      handleLLMQuery();
-    }
-  };
+    },
+    onFinish: () => {
+      isLLMActive.set(false);
+    },
+  });
 
   function handleUserInput(event: Event) {
     // TODO: Update height after submission to reset it
@@ -61,20 +66,20 @@
   }
 
   const generateStory = () => {
-    $messages.push({
+    append({
       role: "system",
-      content:
-        "Generate a story based on the information provided. Do not generate questions until the user asks you to.",
+      content: `Generate a story in ENGLISH ONLY based on the information provided.
+                Do not generate any questions yet.
+                The story should be 3 paragraphs.`,
     });
-    handleLLMQuery();
   };
 
   const generateQuestion = () => {
-    $messages.push({
-      role: "user",
-      content: "Generate a question based on the story.",
+    append({
+      role: "system",
+      content: `Generate a question in FRENCH ONLY based on the story.
+                Questions should be relavant to the story and challenge the user to learn parts of the language, including vocabulary, grammar, and comprehension.`,
     });
-    handleLLMQuery();
   };
 
   function handleKeyDown(event: KeyboardEvent) {
@@ -85,87 +90,18 @@
     // Allow Shift+Enter to insert newline as usual
   }
 
-  const handleLLMQuery = async () => {
-    abortController = new AbortController();
-    const LLMResponse = await fetchLLMResponse(
-      systemPrompt,
-      $messages,
-      abortController.signal
-    );
-
-    if (!LLMResponse) return;
-    if (!LLMResponse.body) throw new Error("No response body");
-
-    const reader = LLMResponse.body.getReader();
-
-    isLLMActive.set(true);
-    while (true) {
-      const { done, value } = await reader.read();
-
-      if (done) {
-        break;
-      }
-
-      // Decoding each chunk
-      const chunk = new TextDecoder().decode(value);
-      console.log(chunk)
-      // Split by new lines and filter out empty lines
-      const lines = chunk.split("\n").filter((line) => line.trim());
-      for (const line of lines) {
-        try {
-          const part = JSON.parse(line);
-          if (part.choices[0].finish_reason === "stop") {
-            isLLMActive.set(false);
-            // if (LLMProvider === LLMProviders.GROQ) {
-            //   // Log token usage and timing information for GROQ
-            //   console.log(part.x_groq.usage);
-            // }
-            break;
-          }
-          // Concatenate the content of each part to accumulatedContent
-          const content: string = part.choices[0].delta.content;
-
-          // Check if the last message is from the assistant and update it,
-          // otherwise create a new message
-          messages.update((messages) => {
-            if (
-              messages.length > 0 &&
-              messages[messages.length - 1].role === "assistant"
-            ) {
-              messages[messages.length - 1].content += content;
-            } else {
-              messages.push({
-                role: "assistant",
-                content: content,
-              });
-            }
-            return messages;
-          });
-        } catch (error) {
-          console.error("Error parsing LLM response:", error);
-        }
-      }
-    }
-    // Prevent simultaneous LLM requests
-    isLLMActive.set(false);
-  };
-
   async function fetchLLMResponse(
-    systemPrompt: ChatMessage | null,
-    messages: ChatCompletion.Choice.Message[],
+    systemPrompt: ChatCompletionSystemMessageParam | null,
+    messages: Message[],
     signal: AbortSignal
   ) {
     try {
-      const response = await fetch("/api/chat-completion", {
+      const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          provider: LLMProvider,
-          // gpt-3.5-turbo-0125
-          // mixtral-8x7b-32768
-          model: "gpt-3.5-turbo-0125",
           systemPrompt,
-          messages,
+          messages: [...messages, ...(tempMessage ? [tempMessage] : [])],
         }),
         signal: signal,
       });
@@ -184,19 +120,28 @@
 >
   <h1 class="text-4xl font-bold">{data.title}</h1>
   <div class="flex flex-col gap-6 text-lg">
-    {#if $messages.length > 0}
+    <div class="flex gap-8 items-center">
+      <img src={data.image} alt={data.title} class="w-24 h-24 rounded-md" />
+      <h3 class="text-lg">{data.brief}</h3>
+    </div>
+    {#if $messages.length > 1}
       {#each $messages as message, index (index)}
         {#if message.role !== "system"}
-          <p>{message.content}</p>
+          <div
+            class="w-full h-full flex flex-col gap-4 p-8 rounded-lg shadow-md border border-gray-100"
+          >
+            <p class="text-lg font-semibold">
+              {message.role === "assistant" ? "ToggleMind" : "User"}
+            </p>
+            <p>{message.content.replace("\\n", "\n\n\nreplaced")}</p>
+          </div>
         {/if}
       {/each}
     {:else}
-      <div class="flex flex-row justify-between">
-        <div class="flex gap-2 items-center">
-          <img src={data.image} alt={data.title} class="w-12 h-12 rounded-md" />
-          <h3>{data.brief}</h3>
-        </div>
-        <Ellipsis />
+      <div
+        class="w-full h-full p-8 rounded-lg shadow-md border border-gray-100"
+      >
+        <p>Get started by generating a story!</p>
       </div>
     {/if}
   </div>
@@ -210,7 +155,7 @@
     </div>
     <div class="flex flex-row gap-4">
       <textarea
-        bind:value={inputText}
+        bind:value={$input}
         on:input={handleUserInput}
         on:keydown={handleKeyDown}
         rows="1"

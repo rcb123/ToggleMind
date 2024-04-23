@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { goto } from "$app/navigation";
   import { CheckMark, X } from "$components/icons/index";
 </script>
 
@@ -13,8 +14,9 @@
       <p class="font-bold text-lg">
         <strong class="text-3xl font-extrabold">$0</strong>/month
       </p>
-      <button class="bg-gray-200 rounded-xl p-2 font-bold text-sm my-4"
-        >Start free</button
+      <button
+        class="bg-gray-200 rounded-xl p-2 font-bold text-sm my-4"
+        on:click={() => goto("/signup")}>Start free</button
       >
       <ul class="flex flex-col gap-2 text-sm">
         <li>
@@ -44,8 +46,9 @@
       <p class="font-bold text-lg">
         <strong class="text-3xl font-extrabold">$10</strong>/month
       </p>
-      <button class="bg-gray-200 rounded-xl p-2 font-bold text-sm my-4"
-        >Start learning</button
+      <button
+        class="bg-gray-200 rounded-xl p-2 font-bold text-sm my-4"
+        on:click={() => goto("/signup")}>Start learning</button
       >
       <ul class="flex flex-col gap-2 text-sm">
         <li>
@@ -75,8 +78,9 @@
       <p class="font-bold text-lg">
         <strong class="text-3xl font-extrabold">$30</strong>/month
       </p>
-      <button class="bg-gray-200 rounded-xl p-2 font-bold text-sm my-4"
-        >Become fluent</button
+      <button
+        class="bg-gray-200 rounded-xl p-2 font-bold text-sm my-4"
+        on:click={() => goto("/signup")}>Become fluent</button
       >
       <ul class="flex flex-col gap-2 text-sm">
         <li>

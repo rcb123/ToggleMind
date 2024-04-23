@@ -2,14 +2,6 @@
   import { Book, People, Time, Trophy, Search } from "$components/icons/index";
 
   let emailSent = false;
-
-  function handleSubmit() {
-    const emailInput = document.querySelector('input[type="email"]');
-    const email = emailInput.value;
-
-    // Set the `emailSent` variable to `true`
-    emailSent = true;
-  }
 </script>
 
 <section class="w-full max-w-4xl flex flex-col items-start">
@@ -27,7 +19,9 @@
         You'll also get questions that test your comprehension.
       </p>
       {#if emailSent}
-        <p class="px-4 text-sm md:text-base text-green-500">Email sent successfully</p>
+        <p class="px-4 text-sm md:text-base text-green-500">
+          Email sent successfully
+        </p>
       {/if}
       <div class="flex items-center p-4">
         <div
@@ -43,8 +37,8 @@
           />
           <button
             class="bg-sky-500 text-white font-bold text-xs md:text-base py-2 md:py-3 px-4 rounded-xl"
-            on:click={handleSubmit}
-          >Submit</button>
+            on:click={() => (emailSent = true)}>Submit</button
+          >
         </div>
       </div>
     </div>
