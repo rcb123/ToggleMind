@@ -89,30 +89,6 @@
     }
     // Allow Shift+Enter to insert newline as usual
   }
-
-  async function fetchLLMResponse(
-    systemPrompt: ChatCompletionSystemMessageParam | null,
-    messages: Message[],
-    signal: AbortSignal
-  ) {
-    try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          systemPrompt,
-          messages: [...messages, ...(tempMessage ? [tempMessage] : [])],
-        }),
-        signal: signal,
-      });
-      if (!response.ok)
-        throw new Error(`HTTP error! status: ${response.status}`);
-      return response;
-    } catch (error) {
-      console.error("Error fetching GPT response:", error);
-      throw error;
-    }
-  }
 </script>
 
 <div
