@@ -1,6 +1,28 @@
 <script lang="ts">
   import * as Avatar from "$lib/components/ui/avatar/index";
   import Ellipsis from "$lib/svgs/Ellipsis.svelte";
+
+  // Sample stats data
+  let stats = {
+    wordsLearned: 150,
+    storiesCompleted: 12,
+    learningStreak: 7, // days
+  };
+
+  let tips = [
+    "Practice speaking daily, even if it's just talking to yourself.",
+    "Write down new words in a notebook to reinforce learning.",
+    "Listen to music in the language you're learning to improve your listening skills.",
+  ];
+
+  let currentTipIndex = 0;
+
+  function rotateTip() {
+    currentTipIndex = (currentTipIndex + 1) % tips.length;
+  }
+
+  // Rotate tips every 5 seconds
+  setInterval(rotateTip, 5000);
 </script>
 
 <div class="h-full w-full max-w-4xl flex flex-col gap-9 py-12">
@@ -13,6 +35,27 @@
       />
       <Avatar.Fallback>TM</Avatar.Fallback>
     </Avatar.Root>
+  </div>
+  <!-- Quick Stats Panel -->
+  <div
+    class="flex flex-row justify-evenly items-center bg-gray-100 py-4 rounded-lg shadow"
+  >
+    <div class="text-center">
+      <p class="text-lg font-semibold">{stats.wordsLearned}</p>
+      <p>Words Learned</p>
+    </div>
+    <div class="text-center">
+      <p class="text-lg font-semibold">{stats.storiesCompleted}</p>
+      <p>Stories Completed</p>
+    </div>
+    <div class="text-center">
+      <p class="text-lg font-semibold">{stats.learningStreak} days</p>
+      <p>Learning Streak</p>
+    </div>
+  </div>
+  <div class="bg-blue-100 py-4 px-8 rounded-lg shadow">
+    <h2 class="text-2xl font-bold">Learning Tip</h2>
+    <p>{tips[currentTipIndex]}</p>
   </div>
   <div class="flex flex-col gap-4">
     <h1 class="text-3xl font-bold">Words of the Day</h1>
