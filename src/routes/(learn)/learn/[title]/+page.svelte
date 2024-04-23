@@ -20,13 +20,18 @@
   let currLanguage: string;
   currLanguage = "French";
 
-  const languages = ['French', 'Spanish', 'Japanese', 'Korean', 'Chinese'];
+  const languages = ["French", "Spanish", "Japanese", "Korean", "Chinese"];
   let currentLanguageIndex = 1;
 
   let currDifficulty: string;
   currDifficulty = "Elementary";
 
-  const difficulties = ['Elementary', 'Conversational', 'Academic', 'Professional'];
+  const difficulties = [
+    "Elementary",
+    "Conversational",
+    "Academic",
+    "Professional",
+  ];
   let currentDifficultyIndex = 1;
 
   const isLLMActive = writable(false);
@@ -37,7 +42,7 @@
       <Guidelines>
       You are a helpful foreign language teacher.
       When prompted, generate stories in English based on the information provided.
-      When prompted, generate questions in ${data.language} based on the story.
+      When prompted, generate questions in the current language based on the story.
       When the user responds, provide feedback in English.
       Remember to be encouraging and constructive in your feedback.
       </Guidelines>
@@ -51,10 +56,11 @@
       Questions MUST be in ${currLanguage}
       User Answers MUST be in ${currLanguage}
       Assistant Responses MUST be in English
+      Allow user to change language and difficulty
+      Once a user changes the langauge, all future responses should honor the new language
       </Rules>
       `,
   };
-  let tempMessage: ChatCompletionSystemMessageParam | null = null;
 
   const { input, handleSubmit, messages, append } = useChat({
     initialMessages: [systemPrompt],
@@ -77,31 +83,28 @@
     textarea.style.height = `${Math.min(textarea.scrollHeight + 3, maxHeight)}px`;
   }
 
-  const updateDifficulty = (button) => {
-
+  let difficultyButton: any;
+  const updateDifficulty = () => {
     currDifficulty = difficulties[currentDifficultyIndex];
     currentDifficultyIndex = (currentDifficultyIndex + 1) % difficulties.length;
     // Update the button text to display the newly chosen language
-    document.getElementById("difficultyButton").innerHTML = currDifficulty;
+    difficultyButton.innerHTML = currDifficulty;
   };
 
-  const updateLanguage = (button) => {
-
+  const updateLanguage = () => {
+    isLLMActive.set(true);
     currLanguage = languages[currentLanguageIndex];
     currentLanguageIndex = (currentLanguageIndex + 1) % languages.length;
     // Update the button text to display the newly chosen language
-    document.getElementById("langButton").innerHTML = currLanguage;
-
+    difficultyButton.innerHTML = currLanguage;
 
     append({
       role: "system",
       content: `From now on, we are changing the language you should generate in to ${currLanguage} ONLY. The user should also respond in ${currLanguage} ONLY. Please state "Switching to ${currLanguage}"`,
     });
-    
   };
 
   const generateStory = () => {
-
     append({
       role: "system",
       content: `Generate a story in ENGLISH ONLY based on the information provided.
@@ -160,10 +163,18 @@
 
   <form on:submit={handleSubmit} class="flex flex-col gap-4 w-full">
     <div class="flex flex-row justify-end gap-6">
-      <Button on:click={updateDifficulty} type="button" id="difficultyButton">{currDifficulty}</Button>
-      <Button on:click={updateLanguage} type="button" id="langButton">{currLanguage}</Button>
+      <Button
+        bind:this={difficultyButton}
+        on:click={updateDifficulty}
+        type="button">{currDifficulty}</Button
+      >
+      <Button on:click={updateLanguage} disabled={$isLLMActive} type="button"
+        >{currLanguage}</Button
+      >
       <Button on:click={generateStory} type="button">Generate Story</Button>
-      <Button on:click={generateQuestion} type="button">Generate Question</Button>
+      <Button on:click={generateQuestion} type="button"
+        >Generate Question</Button
+      >
     </div>
     <div class="flex flex-row gap-4">
       <textarea
